@@ -2,16 +2,11 @@
 
 {% block title %} Kinderzentrum - Reservar cita {% endblock %}
 
-{% block css %}
-  
+{% block css %}  
   <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">calendar anterior-->
-
   <link rel='stylesheet' href='/static/css/cita/demo.css' />  
   <link rel="stylesheet" href="/static/css/jquery-ui.css" />
   <link rel="stylesheet" href="/static/css/cita/cita.css" />
-  <link rel="stylesheet" href="/static/css/cita/timewidget.css" />
-  
-   
    
 {% endblock css %}
 
@@ -20,26 +15,12 @@
     {% endblock %}
 
 {% block js %}
- 
-  
-    <!--
-    <script type="text/javascript">
-      $(document).ready(function(){
-        $( "#start_date" ).timepicker();
-          /*$('.datepicker2').timepicker();*/
-
-        });
-    </script>   
-     -->
-     
    
 {% endblock js %}
 
 {% block media_js %}
       {{ form.media.js }}   
 {% endblock %}
-
-
 
 
 {% block content %}
@@ -56,16 +37,10 @@
             <!--div class="form-group col-xs-7 col-lg-1"-->
             <div class="form-group span6 {% if field.errors %} has-error{% endif %}">            
               <label for="code" style="width: 20%;">{{field.label}}</label>
-            {% if field.name == "hora_inicio" or field.name == "hora_fin"  %}
-              <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                {{ field }}            
-            {% else %}
                 {{ field }}
-            {% endif %}
             </div>
           </div>
-          {% endfor %}
+         {% endfor %}
       </div>      
 
       <div id = "savediv">

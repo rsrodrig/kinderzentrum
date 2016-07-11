@@ -6,7 +6,6 @@ from django.contrib.admin.widgets import AdminTimeWidget
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms import inlineformset_factory, BaseInlineFormSet, formset_factory, modelformset_factory
 from modelos.cita_model import Cita
-
 import re
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import Widget, Select, MultiWidget
@@ -21,11 +20,6 @@ HOURS = 0
 MINUTES = 1
 #SECONDS = 3
 MERIDIEM = 4
-
-
-
-
-
 DATEFORMAT = '%d/%m/%Y'
 
 
@@ -39,11 +33,10 @@ class SelectTimeWidget(Widget):
     """
     hour_field = '%s_hour'
     minute_field = '%s_minute'
-    #second_field = '%s_second' 
     meridiem_field = '%s_meridiem'
-    twelve_hr = False # Default to 24hr.
     
-    def __init__(self, attrs=None, hour_step=None, minute_step=None, twelve_hr=False):
+    
+    def __init__(self, attrs=None, hour_step=None, minute_step=None):
         """
         hour_step, minute_step, second_step are optional step values for
         for the range of values for the associated select element
@@ -51,16 +44,8 @@ class SelectTimeWidget(Widget):
         """
         self.attrs = attrs or {}
         
-        #if twelve_hr:
-            #self.twelve_hr = True # Do 12hr (rather than 24hr)
-            #self.meridiem_val = 'a.m.' # Default to Morning (A.M.)
-        
-        if hour_step and twelve_hr:
-            self.hours = range(1,13,hour_step) 
-        elif hour_step: # 24hr, with stepping.
+        if hour_step: # 24hr, with stepping.
             self.hours = range(7,20,hour_step)
-        #elif twelve_hr: # 12hr, no stepping
-            #self.hours = range(1,13)
         else: # 24hr, no stepping
             self.hours = range(7,20) 
 
@@ -103,15 +88,16 @@ class SelectTimeWidget(Widget):
         
         hour_choices = [("%.2d"%i, "%.2d"%i) for i in self.hours]
         local_attrs = self.build_attrs(id=self.hour_field % id_)
-        select_html = Select(choices=hour_choices).render(self.hour_field % name, hour_val, local_attrs)
+        select_html = Select(attrs={'id': 'start_time', 'style': 'width:80px;margin-left: 0px'}, choices=hour_choices).render(self.hour_field % name, hour_val, local_attrs)
         output.append(select_html)
 
         minute_choices = [("%.2d"%i, "%.2d"%i) for i in self.minutes]
         local_attrs['id'] = self.minute_field % id_
-        select_html = Select(choices=minute_choices).render(self.minute_field % name, minute_val, local_attrs)
+        select_html = Select(attrs={'id': 'end_time', 'style': 'width:80px'}, choices=minute_choices).render(self.minute_field % name, minute_val, local_attrs)
         output.append(select_html)
           
         return mark_safe(u'\n'.join(output))
+        
 
     def id_for_label(self, id_):
         return '%s_hour' % id_
@@ -123,14 +109,7 @@ class SelectTimeWidget(Widget):
         m = data.get(self.minute_field % name, 0) # minute 
         
         meridiem = data.get(self.meridiem_field % name, None)
-
-        #NOTE: if meridiem is None, assume 24-hr
-        #if meridiem is not None:
-            #if meridiem.lower().startswith('p') and int(h) != 12:
-                #h = (int(h)+12)%24 
-            #elif meridiem.lower().startswith('a') and int(h) == 12:
-               # h = 0
-        
+                
         if (int(h) == 0 or h) and m:
             return '%s:%s' % (h, m)
 
@@ -160,14 +139,7 @@ class CitaForm(ModelForm):
                                                                  'id':'end_time',
                                                                  'required': 'required'
                                                              }))
-
-    #hora_inicio = forms.TimeField(widget=forms.TimeInput(attrs={'id': "start_date", 'class': "datepicker2"},format='%H:%M'))
-    #hora_fin = forms.TimeField(widget=forms.TimeInput(attrs={'id': "end_date", 'class': "c_end_date"}, format='%H:%M'))
-
-    #hora_inicio = forms.TimeField(widget=TimeWidget(usel10n=True, bootstrap_version=3))
-    #hora_fin = forms.TimeField(widget=TimeWidget(usel10n=True, bootstrap_version=3))
-
-    
+      
 
     class Meta:
         model = Cita
