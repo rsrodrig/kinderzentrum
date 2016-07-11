@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %} Kinderzentrum - Lista de Pacientes {% endblock %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+{% endblock css %}
+
+{% block js %}
+<script type="text/javascript" >
+ var paciente_id;
+ $(document).ready(function(){
+	 $("#busqueda").keyup(function () {
+		 var busqueda = $(this).val();
+		 $.ajax({
+			 method: "POST",
+			 url: "{% url 'busqueda_pacientes' %}",
+			 data: {busqueda: busqueda, csrfmiddlewaretoken: "{{ csrf_token }}"},
+			 dataType: "json"
+		 })
+		  .done(function( data ) {
+			  var filas = $(".row-hermanos");
+			  filas.remove();
+			  console.log( data );
+
+              $.each(data, function(i, paciente){
+				  var tr = $("<tr></tr>");
+				  tr.attr("class","row-hermanos");
+				  //tr.attr("pk",paciente.pk);
+
+                  var nombres = $("<td></td>").text(paciente.fields.nombres);
+                  var apellidos = $("<td></td>").text(paciente.fields.apellidos);
+                  var fecha_nacimiento = $("<td></td>").text(paciente.fields.fecha_nacimiento);
+                  var lugar_nacimiento = $("<td></td>").text(paciente.fields.lugar_nacimiento);
+          		  var nacionalidad = $("<td></td>").text(paciente.fields.nacionalidad);
+          		  var grupo_sanguineo = $("<td></td>").text(paciente.fields.grupo_sanguineo);
+          		  var sexo = $("<td></td>").text(paciente.fields.sexo);
+          		  var link_paciente = $("<a></a>").text("Editar");
+                  link_paciente.attr('href','registro/pacientes/edit/'+paciente.pk);
+                  var editar = $("<td></td>").append(link_paciente);
+				  tr.append(nombres); tr.append(apellidos); tr.append(fecha_nacimiento);
+                  tr.append(lugar_nacimiento); tr.append(nacionalidad); tr.append(grupo_sanguineo);
+                  tr.append(sexo); tr.append(editar);
+				  $("table").append(tr);
+			  });
+		  });
+
+	 });
+	 $(".btn-delete").on("click", function(arg) {
+         paciente_id = $(this).data("pacienteId");
+		 $("#paciente_name").html($(this).data("pacienteNombre"));
+		 $('#delete-modal').modal();
+	 });
+	 $("#btn-modal-accept").on("click", function(arg){
+		 console.log(paciente_id);
+		 $("#paciente_"+paciente_id).remove();
+		 $.ajax({
+			 method: "POST",
+			 url: "{% url 'paciente_delete_view' %}",
+			 data: {paciente_id: paciente_id, csrfmiddlewaretoken: "{{ csrf_token }}"},
+			 dataType: "json"
+		 }).done(function(data){
+			 console.log(data);
+		 });
+	 });
+ });
+</script>
+{% endblock js %}
+
+
+
+{% block title_name %}: Pacientes{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+
+<input type="text" id="busqueda" class="form-control" style="height:40%;width:98%;" placeholder="Busqueda por nombre o apellido">
+<br>
+
+
+<table class="table table-bordered table-condensed">
+	<tr>
+		<th>Nombres</th>
+		<th>Apellidos</th>
+		<th>Fecha de Nacimiento</th>
+		<th>Lugar de Nacimiento</th>
+		<th>Nacionalidad</th>
+		<th>Grupo sanguíneo</th>
+		<th>Sexo</th>
+		<th>Editar</th>
+		<th>Eliminar</th>
+	</tr>
+
+	{% for paciente in object_list %}
+		<tr class="row-hermanos" id="paciente_{{paciente.id}}">
+			<!-- <td><a href="{#% url 'paciente_view' paciente.id %#}">paciente.nombres</a></td> -->
+			<td>{{paciente.nombres}}</td>
+			<td>{{paciente.apellidos}}</td>
+			<td>{{paciente.fecha_nacimiento}}</td>
+			<td>{{paciente.lugar_nacimiento}}</td>
+			<td>{{paciente.nacionalidad}}</td>
+			<td>{{paciente.grupo_sanguineo}}</td>
+			<td>{{paciente.sexo}}</td>
+			<td><a href="{% url 'paciente_edit' paciente.id %}" class="btn btn-primary btn-sm">Editar</a></td>
+			<td><button class="btn btn-danger btn-sm btn-delete" data-paciente-id="{{paciente.id}}" data-paciente-nombre="{{paciente.nombres}} {{paciente.apellidos}}">Eliminar</button></td>
+		</tr>
+	{% empty %}
+		<h3>No hay pacientes </h3>
+	{% endfor %}
+</table>
+<br>
+</div>
+<div id="delete-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Eliminar paciente</h4>
+      </div>
+      <div class="modal-body">
+          <p>¿Eliminar paciente <span id="paciente_name"></span>?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="btn-modal-accept" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}

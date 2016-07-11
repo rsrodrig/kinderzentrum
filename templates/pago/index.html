@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Pagos</title>
+      <link rel="stylesheet" href="/static/css/base.css" />
+  {% block css %}
+
+  {% endblock css %}
+
+  <!-- Custom styles for this template -->
+  <link href="/static/css/dashboard.css" rel="stylesheet">
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="/static/bower_components/moment/min/moment.min.js"></script>
+  <script type="text/javascript" src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <script type="text/javascript" src="/static/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/static/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+  <script type="text/javascript" src="/static/bower_components/typeahead.js/dist/typeahead.bundle.js"></script>
+
+  <script type="text/javascript" src="/static/js/to-pdf.js"></script>
+  <script src="/static/bower_components/jspdf/dist/jspdf.min.js"></script>
+        <script src="/static/bower_components/html2canvas/build/html2canvas.min.js"></script>
+</head>
+
+<body style="padding-top: 0;">
+  <header>
+
+  	<h1 style="margin-top: 0; margin-bottom: 0; font-family: 'Century Gothic',arial; color: #555;"> Kinderzentrum {% block title_name %}	{% endblock %}</h1>
+    {% load staticfiles %}
+  	<nav class="navbar navbar-default">
+  		<div class="container-fluid">
+
+  			<div class="navbar-header">
+  		      <a class="navbar-brand" href="{% url 'index_view' %}">
+  		      	<img src="{% static "images/home.png" %}" width=30 height=30 style="margin-top:-5px;">
+  		      </a>
+  		    </div>
+
+  			<ul class="nav navbar-nav">
+  				<li class="active"><li>
+  					<a href="/"> Inicio </a>
+  				</li>
+          {% if pagina_actual == "registro" %}<li class="active dropdown">{% else %}<li class="dropdown">{% endif %}
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Registro <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url 'registro_view' %}">Registro de ficha medica</a></li>
+							<li><a href="{% url 'pacientes-list' %}">Lista de pacientes</a></li>
+
+				        </ul>
+					</li>
+          <li  {% if pagina_actual == "cita" %} class="active" {% endif %}><a href="{% url 'reservar_cita_view' %}">Cita</a></li>
+
+					<li {% if pagina_actual == "asistencia_paciente" %} class="active" {% endif %}><a href="{% url 'lista_asistencia' %}">Asistencia paciente</a></li>
+          <li><a href="/pagos">Pagos</a></li>
+          {% if user.is_superuser %}
+  				<li class="dropdown {% if pagina_actual == "manejo_usuarios" %} active {% endif %}">
+  					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Manejo de usuarios <span class="caret"></span></a>
+  						<ul class="dropdown-menu">
+  							<li><a href="{% url 'admin_usuarios' %}">Crear nuevos usuarios</a></li>
+  							<li><a href="{% url 'usuarios_permisos' %}">Actualizar permisos de usuarios</a></li>
+  							<li><a href="{% url 'changepassword' %}">Cambiar mi contraseña</a></li>
+  				        </ul>
+  				</li>
+          {% else %}
+            <li><a href="{% url 'changepassword' %}">Cambiar contraseña</a></li>
+  				{% endif %}
+          <li><a href="#">Acerca de la fundación</a></li>
+  		  </ul>
+        <ul class="nav navbar-nav navbar-right">
+  		      	{% if user.is_authenticated %}
+  				<li><a href="{% url 'logout_view' %}"><span class="glyphicon glyphicon-log-out"></span> Logout - {{user.first_name}}</a></li>
+  				{% else %}
+  				<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+  				<li><a href="{% url 'login_view' %}"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
+  				{% endif %}
+  		    </ul>
+  		</div>
+  	</nav>
+  </header>
+
+  <div class="panel panel-primary" style="margin-left: 5%; margin-right: 5%">
+      <div class="panel-heading">Filtros de búsqueda</div>
+      <div class="panel-body">
+        <div id="content" class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 col-xs-12">
+              <p>Seleccione el niño</p>
+            </div>
+            <div class="col-md-6 col-xs-6">
+              <div id="custom-search-input">
+                <div class="input-group">
+                  {% if context %}
+                  <input type="text" class="form-control input-md typeahead" placeholder="Buscar" value="{{ context.patient.nombres }} {{ context.patient.apellidos }}" />
+                  {% else %}
+                  <input type="text" class="form-control input-md typeahead" placeholder="Buscar" />
+                  {% endif %}
+                  <span class="input-group-btn">
+                    <button style="background-color: #337ab7; border-color: #337ab7;"class="btn btn-info" type="button">
+                      <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </span>
+                </div>
+                <div class="input-group col-md-6">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
+              <p>Fecha</p>
+            </div>
+            <div class='col-md-6 col-xs-6'>
+              <div class="form-group">
+                <div class='input-group date' id='datetimepicker6'>
+                  <input type='text' class="form-control" />
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class='col-md-6 col-xs-6'>
+              <div class="form-group">
+                <div class='input-group date' id='datetimepicker7'>
+                  <input type='text' class="form-control" />
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button id="generate_payments_options" onclick="generatePayments();" type="button" class="btn btn-info pull-right" style="background-color: #337ab7; border-color: #337ab7;">Generar pago</button>
+        </div>
+      </div>
+
+  </div>
+  <div class="panel panel-primary" style="margin-left: 5%; margin-right: 5%">
+      <div class="panel-heading">Filtros de búsqueda</div>
+      <div class="panel-body">
+
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 col-xs-12">
+              <h3>Nombres:
+              {% if context %}
+                <span id="table_header_name">{{ context.patient.nombres }} {{ context.patient.apellidos }}</span>
+              {% else %}
+                <span id="table_header_name"></span>
+              {% endif %}
+              </h3>
+              <div class="table">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Terapia</th>
+                      <th>Fecha</th>
+                      <th>Costo</th>
+                    </tr>
+                  </thead>
+                  <tbody id="patient_payments_table">
+                    {% if context %}
+                      {% for payment in context.payments_info.payments %}
+                      <tr>
+                        <td>{{ payment.terapia_nombre }}</td>
+                        <td>{{ payment.fecha_cita }}, {{ payment.hora_inicio }} - {{ payment.hora_fin }}</td>
+                        <td>{{ payment.costo }}</td>
+                      </tr>
+                      {% endfor %}
+                      <tr class="table-result">
+                        <td></td>
+                        <td>Total</td>
+                        <td>{{ context.payments_info.total }}</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div>
+              <p>Comment:</p>
+              {% if context %}
+                <textarea class="form-control" rows="3" id="comment">{{ context.comment }}</textarea>
+              {% else %}
+                <textarea class="form-control" rows="3" id="comment"></textarea>
+              {% endif %}
+            </div>
+            <br/>
+            <button style="background-color: #337ab7; border-color: #337ab7;" type="button" class="btn btn-info pull-right" onclick="toPDF();">Generar pdf</button>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <script type="text/javascript">
+    $(function () {
+      $('#datetimepicker6').datetimepicker({
+        format: 'dddd, DD MMMM YYYY'
+      });
+      $('#datetimepicker7').datetimepicker({
+        useCurrent: false, //Important! See issue #1075,
+        format: 'dddd, DD MMMM YYYY'
+      });
+      $("#datetimepicker6").on("dp.change", function (e) {
+        $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+      });
+      $("#datetimepicker7").on("dp.change", function (e) {
+        $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
+      });
+    });
+  </script>
+  <script>
+    function toPDF() {
+      var format = 'a4';
+      var pdfExport = new PDFExport(format);
+      var domNode = document.getElementsByTagName('body')[0];
+      pdfExport.createPageScreenshot(domNode).then(function () {
+        pdfExport.downloadDocument();
+      });
+    }
+  </script>
+  <script src="/static/js/fetch.js" type="text/javascript"></script>
+  <script src="/static/js/pago.js" type="text/javascript"></script>
+</body>
+</html>

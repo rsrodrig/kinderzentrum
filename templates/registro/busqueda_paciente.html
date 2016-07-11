@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %} Kinderzentrum - Busqueda de Pacientes {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+{% endblock css %}
+
+{% block js %}
+<script type="text/javascript" >
+$(document).ready(function(){
+	$("#busqueda").keyup(function () { 
+			  var busqueda = $(this).val();
+			  $.ajax({
+					  method: "POST",
+					  url: ".",
+					  data: {busqueda: busqueda, csrfmiddlewaretoken: "{{ csrf_token }}"},
+					  dataType: "json"
+					})
+					  .done(function( msg ) {
+					  	var tabla = $('#resultado_busqueda');
+					  	tabla.empty();
+					    console.log( msg );
+						    $.each(msg, function(i, paciente){
+								var tr = $("<tr></tr>");
+								tr.attr("class","form-control"); 
+								tr.attr("pk",paciente.pk); 
+								tr.html(paciente.fields.nombres + " " + paciente.fields.apellidos);
+								tabla.append(tr);
+							});
+					  });
+
+			});
+});
+</script>
+{% endblock js %}
+
+{% block title_name %}: Busqueda de Pacientes{% endblock %}
+
+
+{% block content %}
+
+<input type="text" id="busqueda" class="form-control" placeholder="Busqueda por nombre o apellido">
+<table id="resultado_busqueda" >
+</table>
+
+{% endblock %}

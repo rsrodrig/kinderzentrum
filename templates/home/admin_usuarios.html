@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %} Kinderzentrum - Administración de usuarios {% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/admin_usuarios.css" />   
+{% endblock css %}
+	
+{% block js %}
+
+{% endblock js %}
+
+{% block content %}
+
+	{% if registro_usuario %}
+		<div id="registro_usuario">
+			<form action="." method="POST">
+				{% csrf_token %}	
+				<div id="panel_registro_usuario" class="show panel panel-default">
+					<div class="panel-heading">Nuevo Usuario</div>		
+					<div class="panel-body">
+						<div id="errorMsg" class="fade-in one">{{ mensaje }}</div>
+						{{ registro_usuario.as_p }}
+						<input id="loginBtn" class="btn btn-default" type="submit" value="Guardar">
+					</div>
+				</div>							
+			</form>
+		</div>
+
+	{% elif registro_usuario_correcto %}
+	<div id="registro_usuario_correcto">		
+		<ul id="permisos">
+			<div id="panel_registro_usuario_correcto" class="show panel panel-default" style="margin: 0px 5%;">
+				<div class="panel-heading">Usuario Creado</div>		
+				<div class="panel-body">
+					Usuario <b>{{ mensaje }}</b> agregado exitosamente!
+					{% for per in permisos %}
+					<li>{{ per|title }}</li>
+					{% endfor %}
+				</div>
+			</div>		
+		</ul>
+	</div>
+
+	{% elif usuarios %}
+	<div id="usuarios">
+		<div id="panel_permisos_usuario" class="show panel panel-default">
+			<div class="panel-heading">Permisos de Usuarios</div>		
+			<div class="panel-body">
+				<form action="." method="POST">
+				{% csrf_token %}	
+				{{ usuarios.management_form }}
+			  	<table class="table table-bordered table-condensed">
+	                <tr>
+	                    <th>Nombre de usuario</th>
+	                    <th>Nombre</th>
+	                    <th>Permisos</th>
+	                </tr>
+	                {% for form in usuarios %}
+	                    {{ form.id }}
+	                    <tr class="formset-usuario_set">
+	                        <td class="adjust3">{{form.username}}</td>
+	                        <td class="adjust3">{{form.first_name}}</td>
+	                        <td>{{form.grupos}}</td>
+	                    </tr>
+	                {% endfor %}
+	            </table>
+	            <input id="loginBtn" class="btn btn-default" type="submit" value="Guardar">
+	            </form>
+	        </div>	
+        </div>
+	</div>
+	{% endif %}
+
+{% endblock %}

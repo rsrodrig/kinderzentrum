@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+{% block title %} Kinderzentrum - Cita {% endblock %}
+
+{% block css %}
+	  <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+    <link rel="stylesheet" href="/static/css/cita/cita.css" />
+{% endblock css %}
+
+{% block js %}
+{% endblock js %}
+
+
+{% block title_name %}- Cita {{cita.paciente}} {% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Datos de la cita</h3>
+  </div>
+  <div class="panel-body">
+	  <p>Fecha cita: {{cita.fecha_cita}}</p>
+	  <p>Hora inicio: {{cita.hora_inicio}}</p>
+	  <p>Hora fin: {{cita.hora_fin}}</p>    
+	  <p>Estado: {{cita.estado}}</p>
+	  <p>Indicaciones: {{cita.indicaciones}}</p>    
+	  <p>Tipo terapia: {{cita.tipo_terapia}}</p>
+	  <p>Paciente: {{cita.paciente}}</p>
+    <p>Terapista: {{cita.terapista}}</p>
+  </div>
+</div>
+{% endblock %}

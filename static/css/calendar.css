@@ -1,0 +1,8 @@
+.ui-widget 
+{
+	font-size: 1.2em;
+	font-style: italic;
+	color:darkblue;
+	border: 2px solid DarkOrange;
+	background-color: LightYellow;
+}

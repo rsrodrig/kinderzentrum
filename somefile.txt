@@ -1,0 +1,421 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+#
+# Also note: You'll have to insert the output of 'django-admin sqlcustom [app_label]'
+# into your database.
+from __future__ import unicode_literals
+
+from django.db import models
+
+
+class AuthGroup(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    name = models.CharField(unique=True, max_length=80)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    group = models.ForeignKey(AuthGroup)
+    permission = models.ForeignKey('AuthPermission')
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    content_type = models.ForeignKey('DjangoContentType')
+    codename = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.CharField(max_length=254)
+    is_staff = models.BooleanField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+    username = models.CharField(unique=True, max_length=30)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    user = models.ForeignKey(AuthUser)
+    group = models.ForeignKey(AuthGroup)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    user = models.ForeignKey(AuthUser)
+    permission = models.ForeignKey(AuthPermission)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', blank=True, null=True)
+    user = models.ForeignKey(AuthUser)
+    action_time = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
+class RegistroActividadGestacion(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    tipo = models.SmallIntegerField()
+    periodo = models.SmallIntegerField()
+    gestacion = models.ForeignKey('RegistroGestacion')
+
+    class Meta:
+        managed = False
+        db_table = 'registro_actividad_gestacion'
+
+
+class RegistroAlimentacioncostumbres(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    motivo_suspencion_lactancia = models.CharField(max_length=100)
+    afecciones = models.CharField(max_length=100)
+    enfermedades = models.CharField(max_length=256)
+    edad_alimentacion_complementaria = models.PositiveSmallIntegerField()
+    forma_alimento = models.CharField(max_length=100)
+    lugar_desayuno = models.CharField(max_length=50)
+    lugar_comida_media_manana = models.CharField(max_length=50)
+    lugar_almuerzo = models.CharField(max_length=50)
+    lugar_comida_media_tarde = models.CharField(max_length=50)
+    lugar_cena = models.CharField(max_length=50)
+    lugar_comida_otro = models.CharField(max_length=50)
+    alimento_preferido = models.CharField(max_length=20)
+    alimento_rechazado = models.CharField(max_length=20)
+    apetito = models.PositiveSmallIntegerField()
+    motivo_cambios_alimentacion = models.CharField(max_length=256)
+    tiempo_leche_materna = models.PositiveSmallIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_alimentacioncostumbres'
+
+
+class RegistroDatosfamiliaresotros(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    numero_hermanos = models.PositiveSmallIntegerField()
+    hermano_transtorno = models.PositiveSmallIntegerField()
+    transtorno = models.CharField(max_length=50)
+    alteracion_desarrollo = models.NullBooleanField()
+    tipo_enfermedad_parientes = models.CharField(max_length=256)
+    orientacion_a_institucion = models.CharField(max_length=100)
+    transtorno_hermanos = models.NullBooleanField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_datosfamiliaresotros'
+
+
+class RegistroDescripcion(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    preocupacion = models.CharField(max_length=500)
+    disc_molestias = models.CharField(max_length=256)
+    edad_disc_molestia = models.IntegerField()
+    tratamiento = models.BooleanField()
+    lugar_tratamiento = models.CharField(max_length=256)
+    limitaciones_movimiento = models.IntegerField()
+    areas_dificultad = models.CharField(max_length=256)
+    had_convulsion = models.SmallIntegerField()
+    tipo_crisis = models.CharField(max_length=256)
+    edad_crisis = models.SmallIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_descripcion'
+
+
+class RegistroFamiliar(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    parentezco = models.CharField(max_length=50)
+    nombres = models.CharField(max_length=256)
+    apellidos = models.CharField(max_length=256)
+    nivel_estudio = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=256)
+    telefonos = models.CharField(max_length=50)
+    empresa = models.CharField(max_length=256)
+    direccion_empresa = models.CharField(max_length=256)
+    jornada = models.PositiveSmallIntegerField()
+    paciente = models.ForeignKey('RegistroPaciente')
+
+    class Meta:
+        managed = False
+        db_table = 'registro_familiar'
+
+
+class RegistroGestacion(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    sentimientos = models.CharField(max_length=200)
+    num_embarazo = models.PositiveSmallIntegerField()
+    momento_desc_embarazo = models.PositiveSmallIntegerField()
+    lugar_curso_prenatal = models.CharField(max_length=100)
+    carga_horaria = models.CharField(max_length=100)
+    nauseas_trimestre = models.SmallIntegerField()
+    vacuna_tetano = models.BooleanField()
+    comunicacion_bebe = models.CharField(max_length=500)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_gestacion'
+
+
+class RegistroHermano(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    datos_familiares = models.ForeignKey(RegistroDatosfamiliaresotros)
+    fecha_nacimiento = models.DateField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_hermano'
+
+
+class RegistroHistorialmadre(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    enfermedades_previas = models.CharField(max_length=200)
+    enfermedades_durante_embarazo = models.CharField(max_length=256)
+    enfermedad_cronica = models.CharField(max_length=100)
+    defunciones_fetales = models.PositiveSmallIntegerField()
+    hijos_nacidos_muertos = models.PositiveSmallIntegerField()
+    hijos_nacidos_vivos = models.PositiveSmallIntegerField()
+    embarazos = models.PositiveSmallIntegerField()
+    anticonceptivos = models.CharField(max_length=100)
+    enfermedades_antes_concepcion = models.CharField(max_length=256)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_historialmadre'
+
+
+class RegistroMedicamento(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    nombre = models.CharField(max_length=100)
+    dosis_diaria = models.IntegerField()
+    descripcion = models.ForeignKey(RegistroDescripcion)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_medicamento'
+
+
+class RegistroMedico(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    nombres = models.CharField(max_length=256)
+    apellidos = models.CharField(max_length=256)
+    direccion = models.CharField(max_length=256)
+    telefonos = models.CharField(max_length=50)
+    area = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_medico'
+
+
+class RegistroNacimiento(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    nombre_lugar_nacimiento = models.CharField(max_length=500)
+    tipo_lugar_nacimiento = models.CharField(max_length=20)
+    semana_gestacion = models.PositiveSmallIntegerField()
+    metodo_nacimiento = models.CharField(max_length=100)
+    manera_inicio_parto = models.CharField(max_length=30)
+    tipo_ruptura_fuente = models.CharField(max_length=100)
+    sentimientos_parto = models.CharField(max_length=500)
+    sentimientos_nacimiento = models.CharField(max_length=500)
+    duracion_nacimiento = models.PositiveSmallIntegerField()
+    gemelar = models.BooleanField()
+    primera_parte_cuerpo = models.CharField(max_length=50)
+    complicaciones = models.CharField(max_length=200)
+    complicaciones_cordon = models.CharField(max_length=10)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_nacimiento'
+
+
+class RegistroPaciente(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    nombres = models.CharField(max_length=256)
+    apellidos = models.CharField(max_length=256)
+    lugar_nacimiento = models.CharField(max_length=30)
+    fecha_nacimiento = models.DateField()
+    fecha_registro = models.DateField()
+    nacionalidad = models.CharField(max_length=30)
+    sexo = models.CharField(max_length=1)
+    alimentacion = models.ForeignKey(RegistroAlimentacioncostumbres, unique=True)
+    datos_familiares = models.ForeignKey(RegistroDatosfamiliaresotros, unique=True)
+    descripcion = models.ForeignKey(RegistroDescripcion, unique=True)
+    gestacion = models.ForeignKey(RegistroGestacion, unique=True)
+    historial_madre = models.ForeignKey(RegistroHistorialmadre, unique=True)
+    medico = models.ForeignKey(RegistroMedico, unique=True)
+    nacimiento = models.ForeignKey(RegistroNacimiento, unique=True)
+    primeros_dias = models.ForeignKey('RegistroPrimerosdias', unique=True)
+    recien_nacido = models.ForeignKey('RegistroReciennacido', unique=True)
+    grupo_sanguineo = models.CharField(max_length=4)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_paciente'
+
+
+class RegistroPrimerosdias(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    clinica_permanencia = models.CharField(max_length=100)
+    dias_permanencia = models.PositiveIntegerField()
+    icteria = models.NullBooleanField()
+    tratamiento_icteria = models.CharField(max_length=256)
+    examenes = models.CharField(max_length=100)
+    veces_despertar_noche = models.PositiveSmallIntegerField()
+    lugar_dormir = models.PositiveSmallIntegerField()
+    descripcion_bebe = models.CharField(max_length=256)
+    descripcion_madre = models.CharField(max_length=256)
+    situaciones_despues_nacimiento = models.CharField(max_length=256)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_primerosdias'
+
+
+class RegistroReciennacido(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    edad_madre = models.PositiveSmallIntegerField()
+    edad_padre = models.PositiveSmallIntegerField()
+    peso = models.FloatField()
+    tamanio = models.FloatField()
+    diametro_encefalico = models.FloatField()
+    apgar_score = models.PositiveSmallIntegerField()
+    complicaciones_nacimiento = models.CharField(max_length=256)
+    tiempo_apego_precoz = models.PositiveSmallIntegerField()
+    tiempo_sostener_bebe = models.PositiveSmallIntegerField()
+    tiempo_internado = models.BigIntegerField()
+    primera_lactancia = models.PositiveSmallIntegerField()
+    tipo_contacto = models.PositiveSmallIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_reciennacido'
+
+
+class RegistroSituacionGestacion(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    tipo = models.SmallIntegerField()
+    periodo = models.SmallIntegerField()
+    gestacion = models.ForeignKey(RegistroGestacion)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_situacion_gestacion'
+
+
+class RegistroSuplementoalimenticio(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    frecuencia = models.CharField(max_length=50)
+    tipo = models.CharField(max_length=50)
+    cantidad = models.PositiveSmallIntegerField()
+    alimentacion = models.ForeignKey(RegistroAlimentacioncostumbres)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_suplementoalimenticio'
+
+
+class RegistroTerapia(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    tipo = models.SmallIntegerField()
+    tiempo_terapia = models.BigIntegerField()
+    descripcion = models.ForeignKey(RegistroDescripcion)
+    costo_sesion = models.PositiveSmallIntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'registro_terapia'
+
+
+class RegistroTerapista(models.Model):
+    id = models.IntegerField(primary_key=True)  # AutoField?
+    cedula = models.CharField(max_length=10)
+    nombres = models.CharField(max_length=50)
+    apellidos = models.CharField(max_length=50)
+    direccion = models.CharField(max_length=256)
+    telefonos = models.CharField(max_length=50)
+    fecha_nacimiento = models.DateField()
+    grupo_sanguineo = models.CharField(max_length=4)
+    terapia = models.ForeignKey(RegistroTerapia, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'registro_terapista'

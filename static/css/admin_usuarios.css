@@ -1,0 +1,17 @@
+#panel_registro_usuario, #panel_permisos_usuario{
+	margin-right: 10%;
+	margin-left: 10%;
+}
+
+ul{
+	list-style-type: none;
+}
+
+.errorlist{
+	color: red;
+}
+
+.adjust3 input{
+  width: 90% !important;
+  height: 40% !important;
+}

@@ -1,0 +1,118 @@
+{% load extra_tags %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="es">
+<head>
+    <title> {% block title %} Kinderzentrum {% endblock %}</title>
+        <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+        <link rel="stylesheet" href="/static/css/bootstrap.css" />
+        <link rel="stylesheet" href="/static/css/base.css" />
+    {% block css %}
+
+    {% endblock css %}
+     <script src="/static/js/jquery-1.9.1.js"></script>
+        <script src="/static/js/jquery-ui.js"></script>
+        <script src="/static/js/bootstrap.js"></script>
+        <script src="/static/js/registro.js"></script>
+        <script src="/static/js/modernizr.min.js"></script>
+    {% block js %}
+
+
+    {% endblock js %}
+</head>
+
+<body>
+<header>
+
+	<h1> Kinderzentrum {% block title_name %}	{% endblock %}</h1>
+  {% load staticfiles %}
+	<nav class="navbar navbar-default">
+		<div class="container-fluid">
+
+			<div class="navbar-header">
+		      <a class="navbar-brand" href="{% url 'index_view' %}">
+		      	<img src="{% static "images/home.png" %}" width=30 height=30 style="margin-top:-5px;">
+		      </a>
+		    </div>
+
+			<ul class="nav navbar-nav">
+				{% if pagina_actual %}
+				{% if pagina_actual == "inicio" %}
+				<li class="active">{% else %}<li>{% endif %}
+					<a href="{% url 'index_view' %}"> Inicio </a>
+				</li>
+				{% else %}
+				<li class="active"><a href="{% url 'index_view' %}"> Inicio </a></li>
+				{% endif %}
+
+				{% if user.is_authenticated %}
+					<!--Con la variable perms accedemos a los diferentes permisos que contiene el usuario actual de la sesion-->
+					{% if user|has_group:"registro" %}
+					{% if pagina_actual == "registro" %}<li class="active dropdown">{% else %}<li class="dropdown">{% endif %}
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Registro <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url 'registro_view' %}">Registro de ficha medica</a></li>
+							<li><a href="{% url 'pacientes-list' %}">Lista de pacientes</a></li>
+
+				        </ul>
+					</li>
+					{% endif %}
+
+					{% if user|has_group:"cita" %}
+
+					{% if pagina_actual == "cita" %}<li class="active dropdown">{% else %}<li class="dropdown">{% endif %}
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Citas <span class="caret"></span></a>
+						
+						<ul class="dropdown-menu">				
+							<li><a href="{% url 'reservar_cita_view' %}">Reservar cita</a></li>
+							<li><a href="{% url 'citas_list' %}">Lista de citas</a></li>
+				        </ul>
+					</li>
+
+					<li {% if pagina_actual == "asistencia_paciente" %} class="active" {% endif %}><a href="{% url 'lista_asistencia' %}">Asistencia paciente</a></li>
+					{% endif %}
+
+
+					{% if user|has_group:"pagos" %}
+
+					<li><a href="/pagos">Pagos</a></li>
+
+					{% endif %}
+
+				{% if user.is_superuser %}
+				<li class="dropdown {% if pagina_actual == "manejo_usuarios" %} active {% endif %}">
+					<a class="dropdown-toggle" data-toggle="dropdown" href="#"> Manejo de usuarios <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{% url 'admin_usuarios' %}">Crear nuevos usuarios</a></li>
+							<li><a href="{% url 'usuarios_permisos' %}">Actualizar permisos de usuarios</a></li>
+							<li><a href="{% url 'changepassword' %}">Cambiar mi contraseña</a></li>
+				        </ul>
+				</li>
+        {% else %}
+          <li><a href="{% url 'changepassword' %}">Cambiar contraseña</a></li>
+				{% endif %}
+				{% endif %}
+
+				<li><a href="#">Acerca de la fundación</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+		      	{% if user.is_authenticated %}
+				<li><a href="{% url 'logout_view' %}"><span class="glyphicon glyphicon-log-out"></span> Logout - {{user.first_name}}</a></li>
+				{% else %}
+				<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+				<li><a href="{% url 'login_view' %}"><span class="glyphicon glyphicon-log-in"></span> Login </a></li>
+				{% endif %}
+		    </ul>
+		</div>
+	</nav>
+</header>
+
+<section>
+	<h2>{{ advertencia }}</h2>
+	{% block content %}
+	{% endblock %}
+    {% block script %}
+    {% endblock script %}
+</section>
+
+</body>
+</html>

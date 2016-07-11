@@ -1,0 +1,123 @@
+#panel1{ 
+margin-top: 3px;
+margin-bottom: 3px;
+margin-left: 200px;
+margin-right: 200px;
+}
+
+#panel-body{ 
+width: 100%;
+}
+
+#datepicker2{ 
+background-color: #337AB7;
+color: white;
+font-weight: bold;
+width: 98.5%;
+}
+
+#savediv{  
+  text-align: center;
+  font-family: "Century Gothic",arial;
+  color: #FFFFFF;
+  background-color: lightgrey;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 0px 5px 0px;
+}
+
+
+h2 {
+  margin: 0.5em 0;
+  font-size: 1.4em; 
+}
+
+p {
+  margin: 0.5em;  
+}
+
+#titulo{
+  font-size: 28px;
+  text-align: center;
+  font-family: "Century Gothic",arial;
+  color: #555;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 0px 5px 0px;
+}
+
+#id_date{
+  font-size: 18px;
+  text-align: center;
+  /*font-family: "Century Gothic",arial;*/
+  color: #555;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 0px 5px 0px;
+  width: 260px;
+}
+
+
+.ui-widget {
+  font-size: 1em; 
+}
+/*
+#event_edit_container, #about {
+  display: none;
+}
+*/
+
+#event_edit_container, #about {
+  display: block;
+}
+
+#about_button_container {
+  position: absolute;
+  top: 1em;
+  right: 1em; 
+  padding: 0.5em 2em;
+  background: #ddf;
+  border: 1px solid #bbd;
+  width: 10em;
+  text-align: center;
+}
+
+.wc-header td {
+  background: url(images/header-bg.png) repeat-x;
+}
+
+label {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+form ul {
+  padding: 0.3em;
+}
+
+select, input[type='text'], textarea {
+  /*width: 250px;*/
+  width: 210px;
+  padding: 3px;
+}
+/*
+input[type='text'] {
+  width: 230px;
+}
+*/
+ul.formatted,ol.formatted {
+  display: block;
+  margin: 1em 0.5em;
+}
+
+ul.formatted li,ol.formatted li {
+  margin: 5px 30px;
+  display: auto;
+}
+
+ul.formatted li {
+  list-style-type: disc;
+}
+
+ol.formatted li {
+  list-style-type: decimal;
+}

@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %} Kinderzentrum - Lista de Citas {% endblock %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="/static/css/jquery-ui.css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.css" />
+{% endblock css %}
+
+{% block js %}
+<script type="text/javascript" >
+ var cita_id;
+ $(document).ready(function(){
+	 $("#busqueda").keyup(function () {
+		 var busqueda = $(this).val();
+		 $.ajax({
+			 method: "POST",
+			 url: "{% url 'busqueda_citas' %}",
+			 data: {busqueda: busqueda, csrfmiddlewaretoken: "{{ csrf_token }}"},
+			 dataType: "json"
+		 })
+		  .done(function( data ) {
+			  var filas = $(".row-hermanos");
+			  filas.remove();
+			  console.log( data );
+
+              $.each(data, function(i, cita){
+				  var tr = $("<tr></tr>");
+				  tr.attr("class","row-hermanos");
+				  //tr.attr("pk",cita.pk);
+
+                  var fecha_cita = $("<td></td>").text(cita.fields.fecha_cita);
+                  var hora_inicio = $("<td></td>").text(cita.fields.hora_inicio);
+                  var hora_fin = $("<td></td>").text(cita.fields.hora_fin);
+
+                  var estado = $("<td></td>").text(cita.fields.estado);
+          		  var indicaciones = $("<td></td>").text(cita.fields.indicaciones);
+          		  var tipo_terapia = $("<td></td>").text(cita.fields.tipo_terapia);
+          		  var paciente = $("<td></td>").text(cita.fields.paciente);
+
+          		  var terapista = $("<td></td>").text(cita.fields.terapista);
+
+          		  var link_cita = $("<a></a>").text("Editar");
+                  link_cita.attr('href','cita/citas/edit/'+cita.pk);
+                  var editar = $("<td></td>").append(link_cita);
+				  tr.append(fecha_cita); tr.append(hora_inicio); tr.append(hora_fin);
+                  tr.append(estado); tr.append(indicaciones); tr.append(tipo_terapia);
+                  tr.append(paciente); tr.append(terapista); tr.append(editar);
+				  $("table").append(tr);
+			  });
+		  });
+
+	 });
+	 $(".btn-delete").on("click", function(arg) {
+         cita_id = $(this).data("citaId");
+		 $("#cita_name").html($(this).data("citaNombre"));
+		 $('#delete-modal').modal();
+	 });
+	 $("#btn-modal-accept").on("click", function(arg){
+		 console.log(cita_id);
+		 $("#cita_"+cita_id).remove();
+		 $.ajax({
+			 method: "POST",
+			 url: "{% url 'cita_delete_view' %}",
+			 data: {cita_id: cita_id, csrfmiddlewaretoken: "{{ csrf_token }}"},
+			 dataType: "json"
+		 }).done(function(data){
+			 console.log(data);
+		 });
+	 });
+ });
+</script>
+{% endblock js %}
+
+
+
+{% block title_name %}: Citas{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container">
+
+<input type="text" id="busqueda" class="form-control" style="height:40%;width:98%;" placeholder="Busqueda por nombre o apellido">
+<br>
+
+
+<table class="table table-bordered table-condensed">
+	<tr>
+		<th>Fecha cita</th>
+		<th>Hora inicio</th>
+		<th>Hora fin</th>
+		<th>Estado</th>
+		<th>Indicaciones</th>
+		<th>Tipo terapia</th>
+		<th>Paciente</th>
+		<th>Terapista</th>
+		<th>Editar</th>
+		<th>Eliminar</th>
+	</tr>
+
+	{% for cita in object_list %}
+		<tr class="row-hermanos" id="cita_{{cita.id}}">
+			<!-- <td><a href="{#% url 'cita_view' cita.id %#}">paciente.nombres</a></td> -->
+			<td>{{cita.fecha_cita}}</td>
+			<td>{{cita.hora_inicio}}</td>
+			<td>{{cita.hora_fin}}</td>
+			<td>{{cita.estado}}</td>
+			<td>{{cita.indicaciones}}</td>
+			<td>{{cita.tipo_terapia}}</td>
+			<td>{{cita.paciente}}</td>
+			<td>{{cita.terapista}}</td>
+
+			<td><a href="{% url 'cita_edit' cita.id %}" class="btn btn-primary btn-sm">Editar</a></td>
+
+			<td><button class="btn btn-danger btn-sm btn-delete" data-cita-id="{{cita.id}}" data-cita-nombre="{{cita.paciente}}">Eliminar</button></td>
+		</tr>
+	{% empty %}
+		<h3>No hay citas </h3>
+	{% endfor %}
+</table>
+<br>
+</div>
+<div id="delete-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Eliminar cita</h4>
+      </div>
+      <div class="modal-body">
+          <p>¿Eliminar cita <span id="cita_name"></span>?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button id="btn-modal-accept" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endblock %}
