@@ -1,56 +1,40 @@
 {% extends 'base.html' %}
-
 {% block title %} Kinderzentrum - Reservar cita {% endblock %}
 
 {% block css %}  
-  <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">calendar anterior-->
   <link rel='stylesheet' href='/static/css/cita/demo.css' />  
   <link rel="stylesheet" href="/static/css/jquery-ui.css" />
-  <link rel="stylesheet" href="/static/css/cita/cita.css" />
-   
+  <link rel="stylesheet" href="/static/css/cita/cita.css" />   
 {% endblock css %}
 
-    {% block media_css %}
-      {{ form.media.css }}   
-    {% endblock %}
-
-{% block js %}
-   
+{% block js %}   
 {% endblock js %}
 
-{% block media_js %}
-      {{ form.media.js }}   
-{% endblock %}
-
-
-{% block content %}
- 
+{% block content %} 
     <form method="POST">
       {% csrf_token %}
       <div id="panel1" class="show panel panel-default">
-      <div id="panel-body"> 
-     
-      {{ datosCitaForm.non_field_errors }}
-        {% for field in datosCitaForm %}
-        {{field.errors}}
-          <div class="row">
-            <!--div class="form-group col-xs-7 col-lg-1"-->
-            <div class="form-group span6 {% if field.errors %} has-error{% endif %}">            
-              <label for="code" style="width: 20%;">{{field.label}}</label>
-                {{ field }}
-            </div>
+          <div id="panel-body">  
+              {{ datosCitaForm.non_field_errors }}
+              {% for field in datosCitaForm %}
+              <div id = "errors">
+              {{field.errors}}  
+              </div>
+              <div class="row">
+                  <div class="form-group span6 {% if field.errors %} has-error{% endif %}">
+                      <label for="code" style="width: 20%;">{{field.label}}</label>
+                          {{ field }}
+                  </div>
+              </div>
+              {% endfor %} 
+          </div>      
+          <div id = "savediv">
+              <button id="enviar" type="submit" class="btn btn-primary">
+                  <i class="icon-user icon-white"></i> Guardar
+              </button>
           </div>
-         {% endfor %}
-      </div>      
-
-      <div id = "savediv">
-         <button id="enviar" type="submit" class="btn btn-primary">
-           <i class="icon-user icon-white"></i> Guardar
-         </button>
       </div>
-     </div>
-    </form>
-   
+    </form>   
 {% endblock %}
 
 {% block script %}

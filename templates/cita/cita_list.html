@@ -91,11 +91,11 @@
 		<th>Fecha cita</th>
 		<th>Hora inicio</th>
 		<th>Hora fin</th>
-		<th>Estado</th>
-		<th>Indicaciones</th>
+		<th>Terapista</th>
 		<th>Tipo terapia</th>
 		<th>Paciente</th>
-		<th>Terapista</th>
+		<th>Indicaciones</th>
+		<th>Estado</th>
 		<th>Editar</th>
 		<th>Eliminar</th>
 	</tr>
@@ -106,11 +106,12 @@
 			<td>{{cita.fecha_cita}}</td>
 			<td>{{cita.hora_inicio}}</td>
 			<td>{{cita.hora_fin}}</td>
-			<td>{{cita.estado}}</td>
-			<td>{{cita.indicaciones}}</td>
+			<td>{{cita.terapista}}</td>	
 			<td>{{cita.tipo_terapia}}</td>
 			<td>{{cita.paciente}}</td>
-			<td>{{cita.terapista}}</td>
+			<td>{{cita.indicaciones}}</td>
+			<td>{{cita.estado}}</td>
+			
 
 			<td><a href="{% url 'cita_edit' cita.id %}" class="btn btn-primary btn-sm">Editar</a></td>
 

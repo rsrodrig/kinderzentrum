@@ -1,47 +1,33 @@
 # -*- encoding: utf-8 -*-
-#import datetime
-from django import forms
-from django.forms import ModelForm
-from django.contrib.admin.widgets import AdminTimeWidget
-from django.forms.extras.widgets import SelectDateWidget
-from django.forms import inlineformset_factory, BaseInlineFormSet, formset_factory, modelformset_factory
-from modelos.cita_model import Cita
+from django                         import forms
+from django.contrib.admin.widgets   import AdminTimeWidget
+from django.forms                   import ModelForm, inlineformset_factory, BaseInlineFormSet, formset_factory, modelformset_factory
+from django.forms.extras.widgets    import SelectDateWidget
+from django.forms.widgets           import Widget, Select, MultiWidget
+from django.utils.safestring        import mark_safe
 import re
-from django.forms.extras.widgets import SelectDateWidget
-from django.forms.widgets import Widget, Select, MultiWidget
-from django.utils.safestring import mark_safe
+from modelos.cita_model             import Cita
 
 
 time_pattern = r'(\d\d?):(\d\d)(:(\d\d))? *([aApP]\.?[mM]\.?)?$'
-
 RE_TIME = re.compile(time_pattern)
 # The following are just more readable ways to access re.matched groups:
 HOURS = 0
 MINUTES = 1
-#SECONDS = 3
 MERIDIEM = 4
 DATEFORMAT = '%d/%m/%Y'
 
 
 class SelectTimeWidget(Widget):
-    """
-    A Widget that splits time input into <select> elements.
-    Allows form to show as 24hr: <hour>:<minute>:<second>, (default)
-    or as 12hr: <hour>:<minute>:<second> <am|pm> 
-    
-    Also allows user-defined increments for minutes/seconds
-    """
+    """A Widget that splits time input into <select> elements.
+    Allows form to show as 24hr: <hour>:<minute>."""
     hour_field = '%s_hour'
     minute_field = '%s_minute'
-    meridiem_field = '%s_meridiem'
-    
+    meridiem_field = '%s_meridiem'    
     
     def __init__(self, attrs=None, hour_step=None, minute_step=None):
-        """
-        hour_step, minute_step, second_step are optional step values for
-        for the range of values for the associated select element
-        twelve_hr: If True, forces the output to be in 12-hr format (rather than 24-hr)
-        """
+        """hour_step, minute_step are optional step values for
+        for the range of values for the associated select element"""
         self.attrs = attrs or {}
         
         if hour_step: # 24hr, with stepping.
@@ -69,8 +55,7 @@ class SelectTimeWidget(Widget):
                                         
                     # check to see if meridiem was passed in
                     if time_groups[MERIDIEM] is not None:
-                        self.meridiem_val = time_groups[MERIDIEM]
-                                       
+                        self.meridiem_val = time_groups[MERIDIEM]                                       
 
         # If we're doing a 12-hr clock, there will be a meridiem value, so make sure the
         # hours get printed correctly
@@ -115,39 +100,26 @@ class SelectTimeWidget(Widget):
 
         return data.get(name, None)
 
-
-
+        
 class CitaForm(ModelForm):
-    error_css_class = 'has-error'
-    fecha_cita = forms.DateField(input_formats=[DATEFORMAT],
-                                       label='Fecha de cita',
-                                       widget=forms.DateInput(attrs=
-                                                              {
-                                                                 'class':'datepicker form-control',
-                                                                  'required': 'required'
-                                                             },
-                                                              format=DATEFORMAT))
-
-    # Specify a basic 24-hr time Widget (the default)
-    hora_inicio = forms.TimeField(widget=SelectTimeWidget(attrs=
-                                                              {
-                                                                 'id':'start_time',
-                                                                 'required': 'required'
-                                                             }))
-    hora_fin = forms.TimeField(widget=SelectTimeWidget(attrs=
-                                                              {
-                                                                 'id':'end_time',
-                                                                 'required': 'required'
-                                                             }))
-      
-
+    required_css_class = 'required'
+    #error_css_class = 'has-error'
     class Meta:
         model = Cita
         fields = ['fecha_cita',
                   'hora_inicio',
-                  'hora_fin',
-                  'estado',
-                  'indicaciones',
+                  'hora_fin',                                    
                   'tipo_terapia',
                   'paciente',
-                  'terapista']
+                  'terapista',
+                  'estado',
+                  'indicaciones']
+        widgets = {'fecha_cita': forms.DateInput(attrs= {'class':'datepicker form-control', 'placeholder': 'Hacer click aquí para desplegar el calendario'}, format=DATEFORMAT),
+                   'hora_inicio': SelectTimeWidget(),
+                   'hora_fin': SelectTimeWidget(),                   
+                   'tipo_terapia': forms.Select(attrs={'class':'form-control'}),
+                   'paciente': forms.Select(attrs={'class':'form-control'}),
+                   'terapista': forms.Select(attrs={'class':'form-control'}),
+                   'estado': forms.Select(attrs={'class':'form-control'} ),                    
+                   'indicaciones':forms.TextInput(attrs={'value':'pendientes'})
+                   }   
